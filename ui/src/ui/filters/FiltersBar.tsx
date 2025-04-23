@@ -1,6 +1,5 @@
 import {SearchIcon} from "lucide-react";
-import React, {useContext} from "react";
-import {League} from "@/types/league";
+import React from "react";
 
 
 interface FilterBarProps {

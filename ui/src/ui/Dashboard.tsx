@@ -1,7 +1,4 @@
 import React, {useState, useMemo, useEffect} from "react";
-import {Button} from "@/components/ui/button";
-import {SearchIcon} from "lucide-react";
-import {motion} from "framer-motion";
 import {Header} from "@/ui/Header";
 import {League} from "@/types/league";
 import {FiltersBar} from "@/ui/filters/FiltersBar";
@@ -171,9 +168,6 @@ const SportsBettingDashboard: React.FC = () => {
     const [selectedLeague, setSelectedLeague] = useState<League>("All");
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState<"date" | "upside">("upside");
-    const [homeTeam, setHomeTeam] = useState<Team | null>(null);
-    const [awayTeam, setAwayTeam] = useState<Team | null>(null);
-    const [prediction, setPrediction] = useState<Prediction | null>(null);
     const [isLoadingBettingLines, setIsLoadingBettingLines] = useState(false);
     const [selectedLeagueTeams, setSelectedLeagueTeams] = useState<Team[]>(mockTeams);
 
@@ -223,9 +217,6 @@ const SportsBettingDashboard: React.FC = () => {
         const newLeague = e.target.value as League;
         setSelectedLeague(newLeague);
         setSelectedLeagueTeams(mockTeams.filter(team => newLeague === "All" || team.league === newLeague));
-
-        setHomeTeam(null);
-        setAwayTeam(null);
 
     }
 
