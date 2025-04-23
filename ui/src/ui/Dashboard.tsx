@@ -1,39 +1,16 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { SearchIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import React, {useState, useMemo, useEffect} from "react";
+import {Button} from "@/components/ui/button";
+import {SearchIcon} from "lucide-react";
+import {motion} from "framer-motion";
+import {Header} from "@/ui/Header";
+import {League} from "@/types/league";
+import {FiltersBar} from "@/ui/filters/FiltersBar";
+import {Team} from "@/types/Team";
+import BettingLine from "@/types/BettingLine";
+import Prediction from "@/types/Prediction";
+import {BettingLineList} from "@/ui/betting_lines/BettingLineList";
+import {PredictionTool} from "@/ui/predictions/PredictionTool";
 
-
-
-type League = "NBA" | "NFL" | "MLB" | "NHL" | "NCAA";
-
-
-// Types for our data structures
-interface Team {
-    id: string;
-    name: string;
-    abbreviation: string;
-    city: string;
-    primaryColor: string;
-    secondaryColor: string;
-    logoUrl: string;
-    league: League;
-}
-
-interface BettingLine {
-    id: string;
-    league: League;
-    teams: [Team, Team];
-    odds: [number, number]; // [home odds, away odds]
-    predictedWinner: 0 | 1; // 0 for home, 1 for away
-    date: string;
-    potentialUpside: number; // 0-1 scale
-}
-
-interface Prediction {
-    winner: Team;
-    confidence: number; // 0-1 scale
-}
 
 // Mock data
 const mockTeams: Team[] = [
@@ -187,10 +164,11 @@ const mockBettingLines: BettingLine[] = [
     }
 ];
 
+
 const SportsBettingDashboard: React.FC = () => {
     // State management
     const [bettingLines, setBettingLines] = useState<BettingLine[]>([]);
-    const [selectedLeague, setSelectedLeague] = useState<string>("All");
+    const [selectedLeague, setSelectedLeague] = useState<League>("All");
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState<"date" | "upside">("upside");
     const [homeTeam, setHomeTeam] = useState<Team | null>(null);
@@ -210,7 +188,7 @@ const SportsBettingDashboard: React.FC = () => {
         }, 1000);
     }, []);
 
-    // Filter and sort betting lines
+
     const filteredLines = useMemo(() => {
         return bettingLines
             .filter((line) => {
@@ -232,23 +210,17 @@ const SportsBettingDashboard: React.FC = () => {
             );
     }, [bettingLines, selectedLeague, searchTerm, sortBy]);
 
+    const handleSearchTermChange = async () => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value.trim());
+    }
 
-    // Handle prediction request
-    const handlePrediction = async () => {
-        if (!homeTeam || !awayTeam || homeTeam.id === awayTeam.id) return;
+    const handleSortByChange = async () => (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortBy(e.target.value.trim() as "date" | "upside");
+    }
 
-
-        // Simulate API call
-        setTimeout(() => {
-            setPrediction({
-                winner: Math.random() > 0.5 ? homeTeam : awayTeam,
-                confidence: Math.random() * 0.4 + 0.6, // 60-100% confidence
-            });
-        }, 1000);
-    };
 
     const handleLeagueChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newLeague = e.target.value;
+        const newLeague = e.target.value as League;
         setSelectedLeague(newLeague);
         setSelectedLeagueTeams(mockTeams.filter(team => newLeague === "All" || team.league === newLeague));
 
@@ -257,192 +229,23 @@ const SportsBettingDashboard: React.FC = () => {
 
     }
 
-    const getFormattedOdds = (odds: number) => {
-        return odds > 0 ? `+${odds}` : odds.toString();
-    }
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-6">
+            <Header></Header>
 
-            {/* Filters and Search */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <select
-                    className="bg-gray-800 rounded-md p-2"
-                    value={selectedLeague}
-                    onChange={handleLeagueChange}
-                >
-                    <option value="All">All Leagues</option>
-                    <option value="NBA">NBA</option>
-                    <option value="NFL">NFL</option>
-                    <option value="MLB">MLB</option>
-                    <option value="NHL">NHL</option>
-                    <option value="NCAA">NCAA</option>
-                </select>
+            <FiltersBar selectedLeague={selectedLeague}
+                        onLeagueChange={handleLeagueChange}
+                        searchTerm={searchTerm}
+                        onSearchTermChange={handleSearchTermChange}
+                        sortBy={sortBy}
+                        onSortByChange={handleSortByChange}></FiltersBar>
 
-                <div className="relative flex-1">
-                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search teams..."
-                        className="w-full bg-gray-800 rounded-md pl-10 p-2"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
+            <BettingLineList filteredLines={filteredLines}
+                             isLoadingBettingLines={isLoadingBettingLines}></BettingLineList>
 
-                <select
-                    className="bg-gray-800 rounded-md p-2"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as "date" | "upside")}
-                >
-                    <option value="upside">Potential Upside</option>
-                    <option value="date">Date</option>
-                </select>
-            </div>
+            <PredictionTool teams={selectedLeagueTeams} league={selectedLeague}></PredictionTool>
 
-            {/* Betting Lines */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {isLoadingBettingLines ? (
-                    <div className="col-span-full text-center">Loading...</div>
-                ) : filteredLines.length === 0 ? (
-                    <div className="col-span-full text-center">No betting lines found</div>
-                ) : (
-                    filteredLines.map((line) => (
-                        <motion.div
-                            key={line.id}
-                            className="bg-gray-800 rounded-lg p-4 shadow-md"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-sm font-bold">{line.league}</span>
-                                <span className="text-sm">
-                  {new Date(line.date).toLocaleDateString()}
-                </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                {line.teams.map((team, index) => (
-                                    <div
-                                        key={team.id}
-                                        className="flex items-center gap-2"
-                                        style={{ color: team.primaryColor }}
-                                    >
-                                        <img
-                                            src={team.logoUrl}
-                                            alt={team.name}
-                                            className="w-8 h-8"
-                                        />
-                                        <div>
-                                            <div className="font-bold">{team.abbreviation}</div>
-                                            <div className="text-sm">{getFormattedOdds(line.odds[index])}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mt-4">
-                                <div className="text-sm text-gray-400">Potential Upside</div>
-                                <div className="w-full bg-gray-700 rounded-full h-2">
-                                    <div
-                                        className="h-2 rounded-full"
-                                        style={{
-                                            width: `${line.potentialUpside * 100}%`,
-                                            backgroundColor: line.teams[line.predictedWinner].primaryColor,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))
-                )}
-            </div>
-
-            {/* Prediction Tool */}
-            <div className="bg-gray-800 rounded-lg p-6 shadow-md">
-                <h2 className="text-2xl font-bold mb-4">Matchup Predictor</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <select
-                        className="bg-gray-900 rounded-md p-2"
-                        onChange={(e) =>
-                            setHomeTeam(selectedLeagueTeams.find((t) => t.id === e.target.value) || null)
-                        }
-                    >
-                        <option value="">Select Home Team</option>
-                        {selectedLeagueTeams.map((team) => (
-                            <option key={team.id} value={team.id} disabled={team.id === awayTeam?.id}>
-                                {team.city} {team.name}
-                            </option>
-                        ))}
-                    </select>
-
-                    <select
-                        className="bg-gray-900 rounded-md p-2"
-                        onChange={(e) =>
-                            setAwayTeam(selectedLeagueTeams.find((t) => t.id === e.target.value) || null)
-                        }
-                    >
-                        <option value="">Select Away Team</option>
-                        {selectedLeagueTeams.map((team) => (
-                            <option key={team.id} value={team.id} disabled={team.id === homeTeam?.id}>
-                                {team.city} {team.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <Button
-                    className="mt-4"
-                    onClick={handlePrediction}
-                    disabled={!homeTeam || !awayTeam || homeTeam?.id === awayTeam?.id}
-                >
-                    Get Prediction
-                </Button>
-                {prediction && homeTeam && awayTeam && (
-                    <motion.div
-                        className="mt-4 p-4 bg-gray-700 rounded-md"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                    >
-                        <div className="flex items-center justify-between">
-                            <div
-                                className="flex items-center gap-2"
-                                style={{ color: homeTeam.primaryColor }}
-                            >
-                                <img
-                                    src={homeTeam.logoUrl}
-                                    alt={homeTeam.name}
-                                    className="w-6 h-6"
-                                />
-                                <span>{homeTeam.abbreviation}</span>
-                            </div>
-                            <span className="text-xl font-bold">vs</span>
-                            <div
-                                className="flex items-center gap-2"
-                                style={{ color: awayTeam.primaryColor }}
-                            >
-                                <img
-                                    src={awayTeam.logoUrl}
-                                    alt={awayTeam.name}
-                                    className="w-6 h-6"
-                                />
-                                <span>{awayTeam.abbreviation}</span>
-                            </div>
-                        </div>
-                        <div className="mt-4">
-                            <div className="text-lg">
-                                Predicted Winner:{" "}
-                                <span
-                                    className="font-bold"
-                                    style={{ color: prediction.winner.primaryColor }}
-                                >
-                  {prediction.winner.name}
-                </span>
-                            </div>
-                            <div className="text-sm">
-                                Confidence: {(prediction.confidence * 100).toFixed(1)}%
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </div>
         </div>
     );
 };
