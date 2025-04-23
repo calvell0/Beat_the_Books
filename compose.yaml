@@ -1,0 +1,31 @@
+
+services:
+  backend:
+    build: .
+    container_name: api
+    networks: [app-net]
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: ./pom.xml
+
+  frontend:
+    build: ./ui
+    container_name: web
+    ports:
+      - "80:80"
+    depends_on: [backend]
+    networks: [app-net]
+    develop:
+      watch:
+        - action: rebuild
+          path: ./ui/src
+        - action: rebuild
+          path: ./ui/package.json
+
+
+
+networks:
+  app-net: {}
