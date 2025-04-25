@@ -1,6 +1,6 @@
 import React from "react";
 import BettingLine from "@/types/BettingLine";
-import {BettingLineCard} from "@/ui/betting_lines/BettingLineCard";
+import {BettingLineCard} from "@/components/betting/BettingLineCard";
 
 
 interface BettingLineListProps {

@@ -5,7 +5,7 @@ A full-stack hobby project that surfaces sports-betting edges.
 **Tech stack**
 
 - **Backend** Spring Boot 3 (Java 21), Maven  
-- **Frontend** React 18 + TypeScript, Vite 6, Tailwind CSS, shadcn/ui, lucide-react  
+- **Frontend** React 19 + TypeScript, Vite 6, Tailwind CSS, shadcn/ui, lucide-react  
 - **Containerisation** Multi-stage Docker images, orchestrated with Docker Compose v2
 
 ---

@@ -16,7 +16,10 @@ WORKDIR /app
 
 COPY --from=build /workspace/target/*.jar app.jar
 
-RUN adduser -D spring && chown spring:spring app.jar
+RUN adduser -D spring && \
+    mkdir -p /home/spring && \
+    chown spring:spring /home/spring
+RUN chown spring:spring app.jar
 USER spring
 
 ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75"

@@ -1,6 +1,7 @@
-package com.calvell0.beat_the_books.espn.team;
+package com.calvell0.beat_the_books.services;
 
 
+import com.calvell0.beat_the_books.model.entity.Team;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 

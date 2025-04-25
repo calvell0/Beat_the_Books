@@ -10,6 +10,12 @@ services:
           path: ./src
         - action: rebuild
           path: ./pom.xml
+    environment:
+      AWS_REGION: us-east-1
+      AWS_SHARED_CREDENTIALS_FILE: /home/spring/.aws/credentials
+      AWS_CONFIG_FILE: /home/spring/.aws/config
+    volumes:
+      - C:\Users\calve\.aws:/home/spring/.aws:ro
 
   frontend:
     build: ./ui
@@ -24,6 +30,7 @@ services:
           path: ./ui/src
         - action: rebuild
           path: ./ui/package.json
+
 
 
 

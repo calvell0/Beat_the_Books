@@ -1,12 +1,12 @@
 import React, {useState, useMemo, useEffect} from "react";
-import {Header} from "@/ui/Header";
+import {Header} from "@/components/layout/Header";
 import {League} from "@/types/league";
-import {FiltersBar} from "@/ui/filters/FiltersBar";
+import {FiltersBar} from "@/components/layout/FiltersBar";
 import {Team} from "@/types/Team";
 import BettingLine from "@/types/BettingLine";
 import Prediction from "@/types/Prediction";
-import {BettingLineList} from "@/ui/betting_lines/BettingLineList";
-import {PredictionTool} from "@/ui/predictions/PredictionTool";
+import {BettingLineList} from "@/components/betting/BettingLineList";
+import {PredictionTool} from "@/components/predictions/PredictionTool";
 
 
 // Mock data
