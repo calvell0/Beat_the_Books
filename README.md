@@ -1,7 +1,7 @@
 
 # Beat the Books
 
-A full-stack hobby project that surfaces sports-betting edges.  
+ 
 **Tech stack**
 
 - **Backend** Spring Boot 3 (Java 21), Maven  
@@ -38,7 +38,7 @@ Beat_the_Books/
 
 ---
 
-## Quick start (one command)
+## Quick start
 
 ```bash
 # from repo root
@@ -56,7 +56,7 @@ docker compose down
 
 ---
 
-## Hot-reload workflow (host tools)
+## Hot-reload workflow
 
 ```bash
 # backend
