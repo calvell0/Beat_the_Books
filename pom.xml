@@ -137,6 +137,23 @@
             <artifactId>flyway-database-postgresql</artifactId>
             <version>11.7.2</version>
         </dependency>
+        <!-- MapStruct for object mapping -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -171,6 +188,11 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.6.3</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

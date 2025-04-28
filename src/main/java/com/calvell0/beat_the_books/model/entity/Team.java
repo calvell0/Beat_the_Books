@@ -44,10 +44,10 @@ public class Team {
     private String alternateColor;
     
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
     
     @Column(name = "is_all_star")
-    private boolean isAllStar;
+    private boolean allStar;
     
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Logo> logos;
