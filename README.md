@@ -1,6 +1,7 @@
 
 # Beat the Books
 
+Beat the Books is a hobby project aimed at allowing its users to outperform the sportsbooks. It will use machine learning models trained on historical sports data to make predictions about the outcomes of future games/matchups and highlight bets with potential high upside (i.e., games where my models disagree with the betting odds). 
  
 **Tech stack**
 
@@ -69,7 +70,3 @@ npm run dev     # Vite on http://localhost:5173 (proxy to :8080)
 ```
 
 ---
-
-## License
-
-MIT © 2025 Matthew Calvello
